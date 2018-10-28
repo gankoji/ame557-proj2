@@ -1,0 +1,2 @@
+default:
+	python NumericalIntegration.py
