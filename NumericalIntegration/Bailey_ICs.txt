@@ -1,0 +1,57 @@
+#######################################################
+# RESULTS USING GAUSS'S METHOD
+# Using generated data sets from:
+#   "Tiangong_01-12-18_GeneratedFromKeplerProp.txt"
+#
+# SITE LAT: 32 22 27  N
+# SITE LON: 111 01 01 W
+# SITE ALT: 757 (m)
+#
+# OBLATE SPHERE MODEL USED
+#     flattening factor:  f = 0.0033528
+#
+# OE vectors given as:
+#     [a, e, i, Omega, omega, f] (angles in deg)
+#
+# DEFINITIONS:
+# OE_Prop: Propagated OEs to the first time-step in the data
+#     subset for that group.  These OEs are propagated from
+#     the starting OE set computed from the THALASSA trajectory
+#     at JD0 = 2458130.58298365.  Note that OE at JD0 is
+#     OE0 = [
+#          6657.3918791
+#             0.0025945
+#            42.7480815
+#           345.3258830
+#           124.4125522
+#           287.3948092 ];
+#
+# OE_Gauss1: Orbit elements computed using first three
+#     measurements in the groups data subset.
+#
+# OE_Gauss2: Orbit elements computed using last three
+#     measurements in the groups data subset.
+#
+#######################################################
+
+------------------------------------------
+GROUP 13
+Bailey, Lee, Lesnewski
+-----------------------------------------
+SIDEREAL LONGITUDE OF SITE AT EACH JD (deg):
+30.4006040620
+30.4010125378
+30.4014310994
+30.4018619321
+30.4022781404
+
+ORBIT ELEMENTS FROM GAUSS
+    OE_Prop       OE_Gauss1       OE_Gauss2
+6657.391879     6657.455850     6657.403242
+   0.002595        0.002607        0.002597
+  42.748082       42.747954       42.748059
+ 345.325883      345.325641      345.325840
+ 124.412552      124.282654      124.389513
+ 287.718564      287.855161      287.761716
+ 
+ 

@@ -1,0 +1,31 @@
+Tiangong-1 TLE
+
+1 37820U 11053A 18012.22140694 .00063269 99835-5 13071-3 0 9990
+2 37820  42.7537 344.4268 0017667 147.3056 342.3989 15.98674657361189
+
+Satellite ID: 37820 (Unclassified)
+
+Launch Year: 2011
+Launch of the year: 053
+Designator (piece of the launch): A
+
+Epoch Year: 18
+Epoch Day: 012.22140695
+
+First time derivative of the mean motion: 0.00063269
+Second time derivative of the mean motion: 0.16639e-5
+BStar: .13071e-3
+
+Ephemeris Type: 0
+TLE Number: 999
+Checksum mod 10: 0
+
+Inclination: 42.7537
+RAAN: 344.4268
+Eccentricity: .0017667
+Argument of Perigee: 147.3056
+Mean Anomaly: 342.3989
+Mean Motion (Revolutions per day): 15.986746573
+Revolution Number at epoch: 36118
+Checksum (mod 10): 9
+

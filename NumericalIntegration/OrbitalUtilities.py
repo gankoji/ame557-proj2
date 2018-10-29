@@ -1,6 +1,8 @@
 import numpy as np
 import math
 
+deg2rad = math.pi/(180.0)
+
 # Functions for classical orbital elements
 def classicalElements(r,v,mu):
     # Angular Momentum
@@ -79,7 +81,7 @@ def classicalElements(r,v,mu):
             # Line of Nodes
             N = np.cross(K,h)
             n = N/np.linalg.norm(N)
-            #print("Noncircular, nonequatorial")
+            
             # Longitude of the ascending node
             Omega = 180.0/math.pi*math.acos(np.dot(I,n))
 
@@ -87,8 +89,14 @@ def classicalElements(r,v,mu):
             omega = 180.0/math.pi*math.acos(np.dot(n,E)/e)
 
             # True Anomaly
-            f = math.acos(np.dot(E,r)
-                          /(e*np.linalg.norm(r)))
+            inner = np.dot(E,r)/(e*np.linalg.norm(r))
+            if inner > 1.0:
+                inner = 1.0
+            elif inner < -1.0:
+                inner = -1.0
+                
+            f = math.acos(inner)
+
             M = 180.0/math.pi*trueAnomalyToMeanAnomaly(f, e)
 
     output = [a,e,inc,Omega,omega,M]
@@ -121,3 +129,50 @@ def meanAnomalytoTrueAnomaly(M_f, n):
     f_f = 180.0/math.pi*f_f_rad
 
     return f_f
+
+def elementsToRV(oe0, mu):
+
+    # Magnitude of position
+    p = oe0[0]*(1 - (oe0[1]**2))
+    rMag = p/(1 + (oe0[1]*math.cos(oe0[5])))
+
+    # Position Vector in perifocal (z assumed zero by definition)
+    rpf = np.zeros((3,))
+    rpf[0] = rMag*math.cos(oe0[5])
+    rpf[1] = rMag*math.sin(oe0[5])
+
+    # Velocity Vector in perifocal
+    vpf = np.zeros((3,))
+    vpf[0] = math.sqrt(mu/p)*(-math.sin(oe0[5]))
+    vpf[1] = math.sqrt(mu/p)*(oe0[1] + math.cos(oe0[5]))
+
+    # Building the DCM from perifocal to equatorial (which is where the
+    # sim is)
+    C = np.zeros((3,3))
+
+    ci = math.cos(oe0[2])
+    si = math.sin(oe0[2])
+    cO = math.cos(oe0[3])
+    sO = math.sin(oe0[3])
+    co = math.cos(oe0[4])
+    so = math.sin(oe0[4])
+
+    C[0,0] = cO*co - sO*so*ci
+    C[0,1] = -cO*so - sO*co*ci
+    C[0,2] = sO*si
+
+    C[1,0] = sO*co + cO*so*ci
+    C[1,1] = -sO*so + cO*co*ci
+    C[1,2] = -cO*si
+
+    C[2,0] = so*si
+    C[2,1] = co*si
+    C[2,2] = ci
+
+    r = np.dot(C, rpf)
+    v = np.dot(C, vpf)
+
+    output = r
+    output = np.append(output, v)
+
+    return output
