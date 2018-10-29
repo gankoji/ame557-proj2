@@ -12,8 +12,8 @@ if debug:
     simLength = 350
     dt = 7.5
 else:
-    simLength = 154*24*3600
-    dt = 3
+    simLength = 82*24*3600
+    dt = 1
 
 N= int(math.floor(simLength/dt))
 simTime = np.linspace(0,simLength, N)
@@ -32,6 +32,10 @@ aD = np.zeros((N,3))
 orbEl = np.zeros((N,6))
 alt = np.zeros((N))
 E = np.zeros((N))
+
+r_c = np.zeros((3,))
+v_c = np.zeros((3,))
+t_c = 0
 
 d2r = math.pi/180.0
 
@@ -114,24 +118,38 @@ for i,x in enumerate(simTime):
         r[i,:] = r[i-1,:]
         v[i,:] = v[i-1,:]
         
-    #print(classicalElements(r[i,:],v[i,:],mu))
     orbEl[i,:] = np.array(classicalElements(r[i,:],v[i,:],mu))
+
+    E[i] = (np.linalg.norm(v[i,:])**2)/(2.0) - (mu/np.linalg.norm(r[i,:]))
+    
     alt[i] = np.linalg.norm(r[i,:]) - Re
     if (alt[i] < 0):
         notCrashed = False
         if not stateFlip:
             stateFlip = True
-            print("Crashed at: " + str(simTime[i]) + " seconds. Position: " + str(r[i,:]))
+            r_c = r[i,:]
+            v_c = v[i,:]
+            t_c = simTime[i]
+            print("Crashed " + str(simTime[i]/86400) + " days after epoch.")
+            print("Position: " + str(r[i,:]))
+            print("Velocity: " + str(v[i,:]))
+            print("Orbital Elements: " + str(orbEl[i,:]))
 
 plotFigures = True
 
 
 if plotFigures:
     fig1, ax1 = plt.subplots()
-    ax1.plot(r[-1000:,0], r[-1000:,1])
+    ax1.plot(r[:,0], r[:,1])
     ax1.set(xlabel='R_x (m)', ylabel='R_y (m)',
            title='Planar Orbit Path')
     fig1.savefig('Path.png')
+
+    fig2, ax2 = plt.subplots()
+    ax2.plot(simTime, E)
+    ax2.set(xlabel='Time (s)', ylabel='Energy (m^2/s^2)',
+            title='Orbital Specific Energy')
+    fig2.savefig('Energy.png')
 
     fig6, ax6 = plt.subplots()
     ax6.plot(simTime, alt)

@@ -37,7 +37,7 @@ def Drag(r,v):
     alt = (rMag - Re)/1000.0
     stuff = atmosphere((rMag - Re)/1000.0)
     rho = stuff[0]
-    a_d = -0.5*(1/BC)*rho*vMag*v
+    a_d = -(1/BC)*rho*vMag*v
     
     # if(alt < 50) or __underHeight__:
     #     __underHeight__ = True
