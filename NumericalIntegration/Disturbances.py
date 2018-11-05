@@ -7,6 +7,8 @@ mu = 3.986e14 # m^3/s^2, Earth's gravitational parameter
 Re = 6378137.0 # m, Earth's equatorial radius
 J2 = 1.08026267e-3 # Oblateness Coefficient
 BC = 1/(12.741621)/(.13071e-3) # Ballistic Coefficient on Tiangong-1
+Bstar = 0.00013071
+rho_ref = 0.157
 
 __underHeight__ = False
 def Oblateness_J2(r,v):
@@ -27,6 +29,7 @@ def Oblateness_J2(r,v):
     a_d = coeff*(rcoeff*r_hat + zcoeff*z_hat)
 
     return a_d
+    #return np.zeros((3,))
 
 def Drag(r,v):
     global __underHeight__
@@ -37,7 +40,7 @@ def Drag(r,v):
     alt = (rMag - Re)/1000.0
     stuff = atmosphere((rMag - Re)/1000.0)
     rho = stuff[0]
-    a_d = -0.5*(1/BC)*rho*vMag*v
+    a_d = -(Bstar/rho_ref)*rho*vMag*v
     
     # if(alt < 50) or __underHeight__:
     #     __underHeight__ = True
@@ -48,5 +51,5 @@ def Drag(r,v):
     #     print(v)
     #     print(a_d)
 
-
+    # return np.zeros((3,))
     return a_d

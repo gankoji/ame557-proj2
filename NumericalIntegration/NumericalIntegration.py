@@ -2,18 +2,18 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-from OrbitalUtilities import *
+from OrbitalUtilities import elementsToRV, classicalElements
 from Disturbances import Oblateness_J2, Drag
 
 debug = False
 
 if debug:
     #simLength = 8706000
-    simLength = 350
-    dt = 7.5
+    simLength = 25000
+    dt = 0.1
 else:
-    simLength = 154*24*3600
-    dt = 3
+    simLength = 160*24*3600
+    dt = 0.5
 
 N= int(math.floor(simLength/dt))
 simTime = np.linspace(0,simLength, N)
@@ -32,6 +32,10 @@ aD = np.zeros((N,3))
 orbEl = np.zeros((N,6))
 alt = np.zeros((N))
 E = np.zeros((N))
+
+r_c = np.zeros((3,))
+v_c = np.zeros((3,))
+t_c = 0
 
 d2r = math.pi/180.0
 
@@ -114,67 +118,95 @@ for i,x in enumerate(simTime):
         r[i,:] = r[i-1,:]
         v[i,:] = v[i-1,:]
         
-    #print(classicalElements(r[i,:],v[i,:],mu))
     orbEl[i,:] = np.array(classicalElements(r[i,:],v[i,:],mu))
+
+    E[i] = (np.linalg.norm(v[i,:])**2)/(2.0) - (mu/np.linalg.norm(r[i,:]))
+    
     alt[i] = np.linalg.norm(r[i,:]) - Re
     if (alt[i] < 0):
         notCrashed = False
         if not stateFlip:
             stateFlip = True
-            print("Crashed at: " + str(simTime[i]) + " seconds. Position: " + str(r[i,:]))
+            r_c = r[i,:]
+            v_c = v[i,:]
+            t_c = simTime[i]
+            print("Crashed " + str(simTime[i]/86400) + " days after epoch.")
+            print("Position: " + str(r[i,:]))
+            print("Velocity: " + str(v[i,:]))
+            print("Orbital Elements: " + str(orbEl[i,:]))
 
 plotFigures = True
-
+plotFormat = "svg"
 
 if plotFigures:
     fig1, ax1 = plt.subplots()
-    ax1.plot(r[-1000:,0], r[-1000:,1])
+    ax1.plot(r[:,0], r[:,1])
     ax1.set(xlabel='R_x (m)', ylabel='R_y (m)',
            title='Planar Orbit Path')
-    fig1.savefig('Path.png')
+    fig1.savefig('Path',format=plotFormat,
+                 bbox_inches='tight', pad_inches=0.2, dpi=4000)
+
+    fig2, ax2 = plt.subplots()
+    ax2.plot(simTime, E)
+    ax2.set(xlabel='Time (s)', ylabel='Energy (m^2/s^2)',
+            title='Orbital Specific Energy')
+    fig2.savefig('Energy',format=plotFormat,
+                 bbox_inches='tight', pad_inches=0.2, dpi=4000)
 
     fig6, ax6 = plt.subplots()
     ax6.plot(simTime, alt)
     ax6.set(xlabel='Time (s)', ylabel='Altitude (m)',
            title='Height Above Reference Sphere')
     ax6.legend(['Simulation Elements'])
-    fig6.savefig('Altitude.png')
+    fig6.savefig('Altitude',format=plotFormat,
+                 bbox_inches='tight', pad_inches=0.2, dpi=4000)
 
     fig5, ax5 = plt.subplots()
     ax5.plot(simTime, aJ2)
+    ax5.set(xlabel='Time(s)', ylabel='Acceleration (m/s^2)',
+            title='Acceleration Due to Earth\' Oblateness')
+    ax5.legend(['X','Y','Z'])
+    fig5.savefig('Oblateness',format=plotFormat,
+                 bbox_inches='tight', pad_inches=0.2, dpi=4000)
 
     fig7,ax7 = plt.subplots()
     ax7.plot(simTime, aD)
     ax7.set(xlabel='Time(s)', ylabel='Acceleration (m/s^2)',
             title='Acceleration Due to Atmospheric Drag')
     ax7.legend(['X','Y','Z'])
+    fig7.savefig('Drag',format=plotFormat,
+                 bbox_inches='tight', pad_inches=0.2, dpi=4000)
     
     fig16, ax16 = plt.subplots()
     ax16.plot(simTime, orbEl[:,5])
     ax16.set(xlabel='Time (s)', ylabel = 'Argument (deg)',
            title='Argument of Periapsis')
     ax16.legend(['Simulation Elements'])
-    fig16.savefig('Periapsis.png')
+    fig16.savefig('Periapsis',format=plotFormat,
+                  bbox_inches='tight', pad_inches=0.2, dpi=4000)
     
     fig17, ax17 = plt.subplots()
     ax17.plot(simTime, orbEl[:,3])
     ax17.set(xlabel='Time (s)', ylabel='Right Ascension (deg)',
            title='Right Ascension of the Ascending Node')
     ax17.legend(['Simulation Elements'])
-    fig17.savefig('Omega.png')
+    fig17.savefig('Omega',format=plotFormat,
+                  bbox_inches='tight', pad_inches=0.2, dpi=4000)
     
     fig18, ax18 = plt.subplots()
     ax18.plot(simTime, orbEl[:,0])
     ax18.set(xlabel='Time (s)', ylabel='Distance (m)',
            title='Semi-Major Axis')
     ax18.legend(['Simulation Elements'])
-    fig18.savefig('semimajor_a1.png')
+    fig18.savefig('Semimajor',format=plotFormat,
+                  bbox_inches='tight', pad_inches=0.2, dpi=4000)
 
     fig20, ax20 = plt.subplots()
     ax20.plot(simTime, orbEl[:,1])
     ax20.set(xlabel='Time (s)', ylabel='Eccentricity',
            title='Eccentricity')
     ax20.legend(['Simulation Elements'])
-    fig20.savefig('Eccentricity.png')
+    fig20.savefig('Eccentricity',format=plotFormat,
+                  bbox_inches='tight', pad_inches=0.2, dpi=4000)
     
     plt.show()
