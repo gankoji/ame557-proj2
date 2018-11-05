@@ -13,7 +13,7 @@ if debug:
     dt = 0.1
 else:
     simLength = 160*24*3600
-    dt = 0.5
+    dt = 5
 
 N= int(math.floor(simLength/dt))
 simTime = np.linspace(0,simLength, N)

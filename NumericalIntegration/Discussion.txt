@@ -1,0 +1,72 @@
+Taingong-1 reentered Earth's atmosphere and fell to its demise on
+April 2, 2018, approximately 00:15 UTC. The TLE data and observations
+from which we built this integration occurred on January 12, 2018,
+which puts the time between our observations and the demise of the
+actual satellite at roughly 80 days.
+
+Numerical integration of the equations of motion, including oblateness
+and drag disturbances on the vehicle (incorporating drag coefficient
+information from the BSTAR term of the 1/12/18 TLE), shows a demise
+time of approximately 153 days from the observation epoch, or roughly
+June 14, 2018.
+
+It appears that the BSTAR drag term reported by the 1/12/18 TLE was
+significantly underestimating the true drag experienced by the
+spacecraft.
+
+Final results of the simulation are as follows:
+python NumericalIntegration.py
+Mean Motion: 0.00116228454858
+Orbital Period: 5405.89248549
+Initial Radius: 6652.093445817603
+Initial Velocity: 7.743944454389337
+
+Crashed 153.06440721368892 days after epoch.
+
+Position: [-3762391.12431109  3577671.2443654   3704724.90023707]
+Velocity: [ 59.75737922 -57.18059507 -59.05636553]
+
+Orbital Elements: [3.18931924e+06 9.99999999e-01 3.61126499e+01 3.44253566e+01
+ 8.02431310e+01 1.28944814e-06]
+
+The coordinates of the crash site were determined using *eci2lla* from
+MATLAB's aerospace toolbox as:
+
+Lat: 35.6174522281136
+Lon: -176.056778303071
+Alt: 7186.99016111251
+
+This puts the crash site in the north pacific, about 100 miles
+northwest of Hawaii. (See picture of google earth with pin at crash
+site). Note that there is an error of approximately 7 km in our
+altitude at crash, due to the oblateness of the earth (we assumed a
+spherical model with equatorial radius in the simulation).
+
+Input/Output from matlab: 
+
+eci2lla([-3762391.12431109  3577671.2443654   3704724.90023707],[2018 6 14 3 21 36])
+
+ans =
+
+          35.6174522281136         -176.056778303071          7186.99016111251
+
+Discussion on how we know our results are okay:
+
+1) Orbital energy decays as expected due to drag. This is plotted for
+both the disturbed case and a reference case in which the disturbances
+were nulled. Shows that our simulation wasn't throwing away orbital
+energy on it's own. (Note that python plots are a little funky, and
+for these plots it shows a difference of like .000061-.000062 over
+time, but that's *individual units*, and the scale of the orbital
+energy in this plot is like 1e7.
+
+2) The altitude plot (I've included a good closeup) shows oscillations
+due to the eccentricity of the orbit, until the satellite actually
+reenters the atmosphere, where we can see the altitude take a steep
+decline as it hurdles toward the surface.
+
+3) Magnitudes of distrubance accelerations all seem acceptable, given
+the parameters we had as inputs. No crazy large or small
+accelerations.
+
+
