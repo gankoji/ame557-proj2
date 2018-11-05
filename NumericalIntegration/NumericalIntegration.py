@@ -2,7 +2,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-from OrbitalUtilities import *
+from OrbitalUtilities import elementsToRV, classicalElements
 from Disturbances import Oblateness_J2, Drag
 
 debug = False
@@ -13,7 +13,7 @@ if debug:
     dt = 0.1
 else:
     simLength = 160*24*3600
-    dt = 7.5
+    dt = 0.5
 
 N= int(math.floor(simLength/dt))
 simTime = np.linspace(0,simLength, N)

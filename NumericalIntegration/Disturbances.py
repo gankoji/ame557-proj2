@@ -28,8 +28,8 @@ def Oblateness_J2(r,v):
 
     a_d = coeff*(rcoeff*r_hat + zcoeff*z_hat)
 
-    # return a_d
-    return np.zeros((3,))
+    return a_d
+    #return np.zeros((3,))
 
 def Drag(r,v):
     global __underHeight__
@@ -51,5 +51,5 @@ def Drag(r,v):
     #     print(v)
     #     print(a_d)
 
-    return np.zeros((3,))
-#return a_d
+    # return np.zeros((3,))
+    return a_d
